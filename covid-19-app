@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Covid 19 tracking system</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+	<link rel="stylesheet" href="your own css file" />
+  
+  <style>
+  .y-4 {
+   width:33%;
+   floath:left;
+  }
+  </style>
+</head>
+<body>
+
+
+
+
+	<div class="tracking-shell">
+		<div class="y-4">
+			<div class="title">
+				Total Cases
+			</div>
+			<div id="total_cases">
+			</div>
+		</div>
+		<div class="y-4">
+			<div class="title">
+				Total Deaths
+			</div>
+			<div id="total_deaths">
+			</div>
+		</div>
+		<div class="y-4">
+			<div class="title">
+				Total Recovery
+			</div>
+			<div id="total_recovery">
+			</div>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+
+	<div id="chartcontainer" style="height:500px; width:100%;"><div>
+	<script src="js/jquery.canvasjs.min.js"></script>
+  // Download jquery canvasjs from their website
+<script>
+
+$(document).ready(function($) {
+
+	$.ajax({
+		url: "https://api.covid19api.com/country/germany",
+		success: function(data) {
+			var last = data.length-1;
+			$("#total_cases").text(data[last].Confirmed);
+			$("#total_deaths").text(data[last].Deaths);
+			$("#total_recovery").text(data[last].Recovered);
+
+
+		var i;
+
+		var dataPoints = [];
+		for (var i= 1; i <data.length; i++) {
+			var diff = +data[i].Confirmed - +data[i-1].Confirmed;
+
+			// We have the data now. Lets add this data to our graph.
+
+			dataPoints.push({
+					x: new Date(data[i].Date),
+					y: diff
+				});
+
+		}
+
+		//Graph Options
+		var options =  {
+				animationEnabled: true,
+				theme: "dark1",
+				axisX: {
+					valueFormatString: "DD MM YYYY",
+				},
+				axisY: {
+					title: "Vaka",
+					titleFontSize: 24,
+					includeZero: false,
+				},
+				data: [{
+					type: "area", 
+					yValueFormatString: "##,###",
+					dataPoints: dataPoints
+				}]
+			};
+
+
+		//Lets render chart
+		$("#chartcontainer").CanvasJSChart(options); 
+
+		},
+
+	});
+
+
+});	
+
+</script>
+
+
+
+</body>
+</html>
